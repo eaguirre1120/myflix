@@ -1,5 +1,6 @@
 package com.eaguirre.myflix.ui.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,13 +9,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityMainBinding
+import com.eaguirre.myflix.model.Movie
 import com.eaguirre.myflix.model.MovieDbClient
+import com.eaguirre.myflix.ui.detail.DetailActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,9 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val moviesAdapter = MoviesAdapter(emptyList()) { movie ->
-            Toast
-                .makeText(this@MainActivity, movie.title, Toast.LENGTH_LONG)
-                .show()
+            navagateTo(movie)
         }
         binding.recyclerMovies.adapter = moviesAdapter
 
@@ -33,10 +36,9 @@ class MainActivity : AppCompatActivity() {
             val popularMovies = MovieDbClient.service.listPopularMovies(apiKey)
                 moviesAdapter.movies = popularMovies.results
                 moviesAdapter.notifyDataSetChanged()
-            }
         }
 
-        //Trabajado con hilos
+        //Trabajando con hilos
         /*thread {
             val apiKey = this.resources.getString(R.string.api_key)
             val popularMovies = MovieDbClient.service.listPopularMovies(apiKey)
@@ -48,6 +50,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }*/
+    }
 
+    private fun navagateTo(movie: Movie) {
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra(DetailActivity.EXTRA_MOVIE, movie)
+        startActivity(intent)
     }
 }
