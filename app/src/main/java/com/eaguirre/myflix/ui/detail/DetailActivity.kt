@@ -3,6 +3,7 @@ package com.eaguirre.myflix.ui.detail
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -44,10 +45,13 @@ class DetailActivity : AppCompatActivity() {
         var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
         detailinfo.text = buildSpannedString {
-            bold { append("Original language: ") }
-            appendLine( movie.original_language )
+            appendInfo(this, R.string.original_language, movie.original_language)
+            appendInfo(this, R.string.original_title, movie.original_title)
+            appendInfo(this, R.string.release_date, dateRelease.format(formatter))
+            appendInfo(this, R.string.popularity, movie.popularity.toString())
+            appendInfo(this, R.string.vote_average, movie.vote_count.toString())
 
-            bold { append("Original title: ") }
+            /*bold { append("Original title: ") }
             appendLine(movie.original_title)
 
             bold { append("Relesase date: ") }
@@ -57,7 +61,17 @@ class DetailActivity : AppCompatActivity() {
             appendLine(movie.popularity.toString())
 
             bold { append("Vote average: ") }
-            appendLine(movie.vote_average.toString())
+            appendLine(movie.vote_average.toString())*/
         }
     }
+
+    private fun appendInfo(builder: SpannableStringBuilder,stringRes:Int, value: String) {
+        builder.bold {
+            builder.append(getString(stringRes))
+            builder.append(": ")
+        }
+
+        builder.appendLine( value )
+    }
+
 }
