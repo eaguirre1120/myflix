@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -28,13 +29,20 @@ class DetailActivity : AppCompatActivity() {
         val binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        binding.fab.setOnClickListener {
+            Toast.makeText(this, "Button like clicked!", Toast.LENGTH_LONG).show()
+        }
+
         val movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE)
         if (movie != null) {
             title = movie.title
             Glide.with(this)
                 .load("https://image.tmdb.org/t/p/w780/${movie.backdrop_path}")
                 .into(binding.backdrop)
-            binding.summary.text = movie.overview
+            binding.summary.text = movie.overview + movie.overview + movie.overview + movie.overview + movie.overview + movie.overview
             setDetailInfo(binding.detailinfo, movie)
         }
     }
@@ -50,18 +58,6 @@ class DetailActivity : AppCompatActivity() {
             appendInfo(this, R.string.release_date, dateRelease.format(formatter))
             appendInfo(this, R.string.popularity, movie.popularity.toString())
             appendInfo(this, R.string.vote_average, movie.vote_count.toString())
-
-            /*bold { append("Original title: ") }
-            appendLine(movie.original_title)
-
-            bold { append("Relesase date: ") }
-            appendLine(dateRelease.format(formatter))
-
-            bold { append("Popularity: ") }
-            appendLine(movie.popularity.toString())
-
-            bold { append("Vote average: ") }
-            appendLine(movie.vote_average.toString())*/
         }
     }
 
