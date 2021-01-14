@@ -8,6 +8,7 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -41,8 +42,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerMovies.adapter = moviesAdapter
         lifecycleScope.launch {
+            binding.progressbar.visibility = View.VISIBLE
             moviesAdapter.movies = moviesRepository.findPopularMovies().results
             moviesAdapter.notifyDataSetChanged()
+            binding.progressbar.visibility = View.GONE
         }
 
     }
