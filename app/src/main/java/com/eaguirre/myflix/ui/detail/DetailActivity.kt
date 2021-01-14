@@ -3,19 +3,12 @@ package com.eaguirre.myflix.ui.detail
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.view.LayoutInflater
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.text.bold
-import androidx.core.text.buildSpannedString
 import com.bumptech.glide.Glide
-import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
 import com.eaguirre.myflix.model.Movie
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+
 
 class DetailActivity : AppCompatActivity() {
 
@@ -43,11 +36,12 @@ class DetailActivity : AppCompatActivity() {
                 .load("https://image.tmdb.org/t/p/w780/${movie.backdrop_path}")
                 .into(binding.backdrop)
             binding.summary.text = movie.overview + movie.overview + movie.overview + movie.overview + movie.overview + movie.overview
-            setDetailInfo(binding.detailinfo, movie)
+            binding.detailinfo.setMovie(movie)
+            //setDetailInfo(binding.detailinfo, movie)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    /*@RequiresApi(Build.VERSION_CODES.O)
     private fun setDetailInfo(detailinfo: TextView, movie: Movie) {
         val dateRelease = LocalDate.parse(movie.release_date)
         var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -68,6 +62,6 @@ class DetailActivity : AppCompatActivity() {
         }
 
         builder.appendLine( value )
-    }
+    }*/
 
 }
