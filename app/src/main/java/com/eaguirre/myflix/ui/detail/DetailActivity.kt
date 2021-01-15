@@ -10,16 +10,20 @@ import com.eaguirre.myflix.databinding.ActivityDetailBinding
 import com.eaguirre.myflix.model.Movie
 
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), DetailPresenter.View {
+
+    private lateinit var binding: ActivityDetailBinding
 
     companion object{
         const val EXTRA_MOVIE = "DetailActivity:movie"
     }
+    private val presenter = DetailPresenter()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityDetailBinding.inflate(layoutInflater)
+
+        binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
@@ -31,14 +35,24 @@ class DetailActivity : AppCompatActivity() {
 
         val movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE)
         if (movie != null) {
-            title = movie.title
-            Glide.with(this)
+            presenter.onCreate(this, movie)
+        }
+    }
+
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun updateUi(movie: Movie) {
+        title = movie.title
+        Glide.with(this)
                 .load("https://image.tmdb.org/t/p/w780/${movie.backdrop_path}")
                 .into(binding.backdrop)
-            binding.summary.text = movie.overview + movie.overview + movie.overview + movie.overview + movie.overview + movie.overview
-            binding.detailinfo.setMovie(movie)
-            //setDetailInfo(binding.detailinfo, movie)
-        }
+        binding.summary.text = movie.overview + movie.overview + movie.overview + movie.overview + movie.overview + movie.overview
+        binding.detailinfo.setMovie(movie)
+        //setDetailInfo(binding.detailinfo, movie)
     }
 
     /*@RequiresApi(Build.VERSION_CODES.O)

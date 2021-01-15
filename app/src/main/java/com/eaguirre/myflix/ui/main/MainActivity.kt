@@ -1,56 +1,57 @@
 package com.eaguirre.myflix.ui.main
 
-import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.location.Geocoder
-import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.lifecycleScope
-import com.eaguirre.myflix.R
+import androidx.viewbinding.ViewBinding
 import com.eaguirre.myflix.databinding.ActivityMainBinding
 import com.eaguirre.myflix.model.Movie
-import com.eaguirre.myflix.model.MovieDbClient
 import com.eaguirre.myflix.model.MoviesRepository
 import com.eaguirre.myflix.ui.detail.DetailActivity
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainPresenter.View {
+
+    private lateinit var binding: ActivityMainBinding
+    private val presenter by lazy {  MainPresenter(MoviesRepository(this)) }
 
     private val moviesAdapter = MoviesAdapter(emptyList()) { movie ->
-        navagateTo(movie)
+        presenter.onMovieClicked(movie)
     }
-
-    private val moviesRepository: MoviesRepository by lazy { MoviesRepository(this) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
+        binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
         setContentView(binding.root)
 
+        presenter.onCreate(this)
+
         binding.recyclerMovies.adapter = moviesAdapter
-        lifecycleScope.launch {
-            binding.progressbar.visibility = View.VISIBLE
-            moviesAdapter.movies = moviesRepository.findPopularMovies().results
-            moviesAdapter.notifyDataSetChanged()
-            binding.progressbar.visibility = View.GONE
-        }
 
     }
 
-    private fun navagateTo(movie: Movie) {
+    override fun onDestroy() {
+        presenter.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun showProgress() {
+        binding.progressbar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        binding.progressbar.visibility = View.GONE
+    }
+
+    override fun updateData(movies: List<Movie>) {
+        moviesAdapter.movies = movies
+        moviesAdapter.notifyDataSetChanged()
+    }
+
+    override fun navigateTo(movie: Movie) {
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra(DetailActivity.EXTRA_MOVIE, movie)
         startActivity(intent)
