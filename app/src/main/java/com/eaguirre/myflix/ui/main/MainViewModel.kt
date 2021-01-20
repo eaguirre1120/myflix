@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.eaguirre.myflix.model.Movie
 import com.eaguirre.myflix.model.MoviesRepository
+import com.eaguirre.myflix.ui.common.Event
 import com.eaguirre.myflix.ui.common.Scope
 import kotlinx.coroutines.launch
 
@@ -15,7 +16,6 @@ class MainViewModel(private val  moviesRepository: MoviesRepository) : ViewModel
     sealed class UiModel{
         object Loading : UiModel()
         class Content(val movies: List<Movie>) : UiModel()
-        class Navigation(val movie: Movie): UiModel()
         object RequestLocationPermission : UiModel()
     }
 
@@ -25,6 +25,9 @@ class MainViewModel(private val  moviesRepository: MoviesRepository) : ViewModel
             if (_model.value == null) refresh()
             return _model
         }
+
+    private  val _navigation = MutableLiveData<Event<Movie>>()
+    val navigation: LiveData<Event<Movie>> = _navigation
 
     init {
         initScope()
@@ -42,7 +45,7 @@ class MainViewModel(private val  moviesRepository: MoviesRepository) : ViewModel
     }
 
     fun onMovieClicked(movie: Movie) {
-        _model.value = UiModel.Navigation(movie)
+        _navigation.value = Event(movie)
     }
 
     override fun onCleared() {

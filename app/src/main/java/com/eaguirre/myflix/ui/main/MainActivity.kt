@@ -12,6 +12,7 @@ import com.eaguirre.myflix.databinding.ActivityMainBinding
 import com.eaguirre.myflix.model.Movie
 import com.eaguirre.myflix.model.MoviesRepository
 import com.eaguirre.myflix.ui.common.getViewModel
+import com.eaguirre.myflix.ui.common.startActivity
 import com.eaguirre.myflix.ui.detail.DetailActivity
 
 
@@ -34,6 +35,14 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerMovies.adapter = moviesAdapter
 
         viewModel.model.observe(this, Observer(::updateUi))
+        viewModel.navigation.observe(this, Observer {
+            event ->
+            event.getContentIfNotHandled()?.let{
+                startActivity<DetailActivity> {
+                    putExtra(DetailActivity.EXTRA_MOVIE, it)
+                }
+            }
+        })
 
     }
 
@@ -45,11 +54,6 @@ class MainActivity : AppCompatActivity() {
             is MainViewModel.UiModel.Content -> {
                 moviesAdapter.movies = model.movies
                 moviesAdapter.notifyDataSetChanged()
-            }
-            is MainViewModel.UiModel.Navigation -> {
-                val intent = Intent(this, DetailActivity::class.java)
-                intent.putExtra(DetailActivity.EXTRA_MOVIE, model.movie)
-                startActivity(intent)
             }
             MainViewModel.UiModel.RequestLocationPermission -> coarsePermissionRequester.request {
                 viewModel.onCoarsePermissionRequested()
