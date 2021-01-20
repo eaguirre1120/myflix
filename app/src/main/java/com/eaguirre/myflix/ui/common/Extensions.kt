@@ -1,6 +1,7 @@
 package com.eaguirre.myflix.ui.common
 
 import android.app.Activity
+import android.app.AppComponentFactory
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -8,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlin.properties.Delegates
+import androidx.lifecycle.ViewModelProvider as ViewModelProvider
 
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = true): View =
     LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
@@ -45,3 +49,16 @@ inline fun <VH : RecyclerView.ViewHolder, T> RecyclerView.Adapter<VH>.basicDiffU
             override fun getNewListSize(): Int = new.size
         }).dispatchUpdatesTo(this@basicDiffUtil)
     }
+
+inline fun <reified T: ViewModel> FragmentActivity.getViewModel(): T{
+    return ViewModelProvider(this)[T::class.java]
+}
+
+inline fun <reified T: ViewModel> FragmentActivity.getViewModel(crossinline factory: () -> T): T {
+
+    val vmFactory = object : ViewModelProvider.Factory{
+        override fun <U : ViewModel> create(modelClass: Class<U>): U = factory() as U
+    }
+
+    return ViewModelProvider(this, vmFactory)[T::class.java]
+}

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.eaguirre.myflix.databinding.ActivityMainBinding
 import com.eaguirre.myflix.model.Movie
 import com.eaguirre.myflix.model.MoviesRepository
+import com.eaguirre.myflix.ui.common.getViewModel
 import com.eaguirre.myflix.ui.detail.DetailActivity
 
 
@@ -26,10 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-                this,
-                MainViewModelFactory(MoviesRepository(this))
-        )[MainViewModel::class.java]
+        viewModel = getViewModel { MainViewModel(MoviesRepository(this)) } //ViewModelProvider( this, MainViewModelFactory(MoviesRepository(this)))[MainViewModel::class.java]
 
         moviesAdapter = MoviesAdapter(viewModel::onMovieClicked)
         binding.recyclerMovies.adapter = moviesAdapter

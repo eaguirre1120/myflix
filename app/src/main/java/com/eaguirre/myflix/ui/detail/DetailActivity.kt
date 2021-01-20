@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
 import com.eaguirre.myflix.model.Movie
+import com.eaguirre.myflix.ui.common.getViewModel
 
 
 class DetailActivity : AppCompatActivity() {
@@ -37,7 +38,7 @@ class DetailActivity : AppCompatActivity() {
 
         val movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE)
         if (movie != null) {
-            viewModel = ViewModelProvider(this, DetailViewModelFactory(movie))[DetailViewModel::class.java]
+            viewModel = getViewModel { DetailViewModel(movie) }//ViewModelProvider(this, DetailViewModelFactory(movie))[DetailViewModel::class.java]
         }
 
         viewModel.model.observe(this, Observer(::updateUi))
