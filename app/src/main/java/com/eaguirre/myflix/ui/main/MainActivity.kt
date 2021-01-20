@@ -4,21 +4,20 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.viewbinding.ViewBinding
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.eaguirre.myflix.databinding.ActivityMainBinding
 import com.eaguirre.myflix.model.Movie
 import com.eaguirre.myflix.model.MoviesRepository
 import com.eaguirre.myflix.ui.detail.DetailActivity
 
 
-class MainActivity : AppCompatActivity(), MainPresenter.View {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val presenter by lazy {  MainPresenter(MoviesRepository(this)) }
+    private lateinit var  viewModel : MainViewModel
 
-    private val moviesAdapter = MoviesAdapter(emptyList()) { movie ->
-        presenter.onMovieClicked(movie)
-    }
+    private lateinit var moviesAdapter : MoviesAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,33 +26,35 @@ class MainActivity : AppCompatActivity(), MainPresenter.View {
         binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
         setContentView(binding.root)
 
-        presenter.onCreate(this)
+        viewModel = ViewModelProvider(
+                this,
+                MainViewModelFactory(MoviesRepository(this))
+        )[MainViewModel::class.java]
 
+        moviesAdapter = MoviesAdapter(viewModel::onMovieClicked)
         binding.recyclerMovies.adapter = moviesAdapter
 
+        viewModel.model.observe(this, Observer(::updateUi))
+
     }
 
-    override fun onDestroy() {
-        presenter.onDestroy()
-        super.onDestroy()
-    }
 
-    override fun showProgress() {
-        binding.progressbar.visibility = View.VISIBLE
-    }
+    private fun updateUi(model: MainViewModel.UiModel) {
 
-    override fun hideProgress() {
-        binding.progressbar.visibility = View.GONE
-    }
+        binding.progressbar.visibility = if (model == MainViewModel.UiModel.Loading) View.VISIBLE else View.GONE
 
-    override fun updateData(movies: List<Movie>) {
-        moviesAdapter.movies = movies
-        moviesAdapter.notifyDataSetChanged()
-    }
+        when(model){
+            is MainViewModel.UiModel.Content -> {
+                moviesAdapter.movies = model.movies
+                moviesAdapter.notifyDataSetChanged()
+            }
+            is MainViewModel.UiModel.Navigation -> {
+                val intent = Intent(this, DetailActivity::class.java)
+                intent.putExtra(DetailActivity.EXTRA_MOVIE, model.movie)
+                startActivity(intent)
+            }
+        }
 
-    override fun navigateTo(movie: Movie) {
-        val intent = Intent(this, DetailActivity::class.java)
-        intent.putExtra(DetailActivity.EXTRA_MOVIE, movie)
-        startActivity(intent)
+
     }
 }

@@ -3,6 +3,7 @@ package com.eaguirre.myflix.ui.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.eaguirre.myflix.ui.common.basicDiffUtil
 import com.bumptech.glide.Glide
 import com.eaguirre.myflix.databinding.ViewMovieItemBinding
 import com.eaguirre.myflix.model.Movie
@@ -12,10 +13,13 @@ import com.eaguirre.myflix.model.Movie
 }*/
 
 class MoviesAdapter(
-    var movies: List<Movie>,
-    private val movieClickedListener: (Movie) -> Unit
+    private val listener: (Movie) -> Unit
     ) :
         RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
+
+    var movies: List<Movie> by basicDiffUtil(
+            emptyList(),
+    areItemsTheSame = { old, new -> old.id == new.id})
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ViewMovieItemBinding.inflate(
@@ -28,7 +32,7 @@ class MoviesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = movies[position]
         holder.bind(movie)
-        holder.itemView.setOnClickListener { movieClickedListener(movie) }
+        holder.itemView.setOnClickListener { listener(movie) }
     }
 
     override fun getItemCount(): Int = movies.size

@@ -5,19 +5,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
 import com.eaguirre.myflix.model.Movie
 
 
-class DetailActivity : AppCompatActivity(), DetailPresenter.View {
+class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
 
     companion object{
         const val EXTRA_MOVIE = "DetailActivity:movie"
     }
-    private val presenter = DetailPresenter()
+    private lateinit var viewModel: DetailViewModel
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,17 +37,15 @@ class DetailActivity : AppCompatActivity(), DetailPresenter.View {
 
         val movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE)
         if (movie != null) {
-            presenter.onCreate(this, movie)
+            viewModel = ViewModelProvider(this, DetailViewModelFactory(movie))[DetailViewModel::class.java]
         }
-    }
 
-    override fun onDestroy() {
-        presenter.onDestroy()
-        super.onDestroy()
+        viewModel.model.observe(this, Observer(::updateUi))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun updateUi(movie: Movie) {
+    private fun updateUi(model: DetailViewModel.UiModel) {
+        val movie = model.movie
         title = movie.title
         Glide.with(this)
                 .load("https://image.tmdb.org/t/p/w780/${movie.backdrop_path}")
@@ -54,28 +54,4 @@ class DetailActivity : AppCompatActivity(), DetailPresenter.View {
         binding.detailinfo.setMovie(movie)
         //setDetailInfo(binding.detailinfo, movie)
     }
-
-    /*@RequiresApi(Build.VERSION_CODES.O)
-    private fun setDetailInfo(detailinfo: TextView, movie: Movie) {
-        val dateRelease = LocalDate.parse(movie.release_date)
-        var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
-        detailinfo.text = buildSpannedString {
-            appendInfo(this, R.string.original_language, movie.original_language)
-            appendInfo(this, R.string.original_title, movie.original_title)
-            appendInfo(this, R.string.release_date, dateRelease.format(formatter))
-            appendInfo(this, R.string.popularity, movie.popularity.toString())
-            appendInfo(this, R.string.vote_average, movie.vote_count.toString())
-        }
-    }
-
-    private fun appendInfo(builder: SpannableStringBuilder,stringRes:Int, value: String) {
-        builder.bold {
-            builder.append(getString(stringRes))
-            builder.append(": ")
-        }
-
-        builder.appendLine( value )
-    }*/
-
 }
