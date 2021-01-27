@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.eaguirre.myflix.ui.common.basicDiffUtil
 import com.bumptech.glide.Glide
 import com.eaguirre.myflix.databinding.ViewMovieItemBinding
-import com.eaguirre.myflix.model.Movie
+import com.eaguirre.myflix.model.database.Movie
 
 /*interface MovieClickedListener{
     fun onMovieClicked(movie: Movie) // (Movie)->Unit
@@ -43,7 +43,7 @@ class MoviesAdapter(
             binding.title.text = movie.title
             Glide
                 .with(binding.root.context)
-                .load("https://image.tmdb.org/t/p/w185/${movie.poster_path}")
+                .load("https://image.tmdb.org/t/p/w185/${movie.posterPath}")
                 .into(binding.cover)
         }
     }

@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
-import com.eaguirre.myflix.model.Movie
+import com.eaguirre.myflix.model.database.Movie
+import com.eaguirre.myflix.model.server.MoviesRepository
+import com.eaguirre.myflix.ui.common.app
 import com.eaguirre.myflix.ui.common.getViewModel
 
 
@@ -32,16 +34,19 @@ class DetailActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.fab.setOnClickListener {
-            Toast.makeText(this, "Button like clicked!", Toast.LENGTH_LONG).show()
-        }
-
-        val movie = intent.getParcelableExtra<Movie>(EXTRA_MOVIE)
-        if (movie != null) {
-            viewModel = getViewModel { DetailViewModel(movie) }//ViewModelProvider(this, DetailViewModelFactory(movie))[DetailViewModel::class.java]
+        val movieId = intent.getIntExtra(EXTRA_MOVIE, 0)
+        if (movieId != null) {
+            viewModel = getViewModel {
+                DetailViewModel(movieId, MoviesRepository(app))
+            }//ViewModelProvider(this, DetailViewModelFactory(movie))[DetailViewModel::class.java]
         }
 
         viewModel.model.observe(this, Observer(::updateUi))
+
+        binding.fab.setOnClickListener {
+//            Toast.makeText(this, "Button like clicked!", Toast.LENGTH_LONG).show()
+            viewModel.onMovieFavoriteClicked()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -49,10 +54,12 @@ class DetailActivity : AppCompatActivity() {
         val movie = model.movie
         title = movie.title
         Glide.with(this)
-                .load("https://image.tmdb.org/t/p/w780/${movie.backdrop_path}")
+                .load("https://image.tmdb.org/t/p/w780/${movie.backdropPath}")
                 .into(binding.backdrop)
         binding.summary.text = movie.overview + movie.overview + movie.overview + movie.overview + movie.overview + movie.overview
         binding.detailinfo.setMovie(movie)
         //setDetailInfo(binding.detailinfo, movie)
+        val icon = if (movie.favorite) R.drawable.ic_favorite_border_checked else R.drawable.ic_favorite_border_unchecked
+        binding.fab.setImageDrawable(getDrawable(icon))
     }
 }

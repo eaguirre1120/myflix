@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Application
 import android.location.Geocoder
 import android.location.Location
+import com.eaguirre.myflix.MoviesApp
 
 class RegionRepository(application: Application) {
 

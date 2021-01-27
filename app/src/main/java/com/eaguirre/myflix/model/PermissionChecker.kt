@@ -4,6 +4,7 @@ package com.eaguirre.myflix.model
 import android.app.Application
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import com.eaguirre.myflix.MoviesApp
 
 
 class PermissionChecker(private val application: Application, private val permission: String) {

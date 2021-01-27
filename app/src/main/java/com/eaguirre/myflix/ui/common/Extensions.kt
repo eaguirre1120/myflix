@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.eaguirre.myflix.MoviesApp
 import kotlin.properties.Delegates
 import androidx.lifecycle.ViewModelProvider as ViewModelProvider
 
@@ -62,3 +63,5 @@ inline fun <reified T: ViewModel> FragmentActivity.getViewModel(crossinline fact
 
     return ViewModelProvider(this, vmFactory)[T::class.java]
 }
+val Context.app: MoviesApp
+    get() = applicationContext as MoviesApp

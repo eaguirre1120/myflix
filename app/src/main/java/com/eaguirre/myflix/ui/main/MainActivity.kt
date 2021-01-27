@@ -1,16 +1,14 @@
 package com.eaguirre.myflix.ui.main
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.eaguirre.myflix.PermissionRequester
 import com.eaguirre.myflix.databinding.ActivityMainBinding
-import com.eaguirre.myflix.model.Movie
-import com.eaguirre.myflix.model.MoviesRepository
+import com.eaguirre.myflix.model.server.MoviesRepository
+import com.eaguirre.myflix.ui.common.app
 import com.eaguirre.myflix.ui.common.getViewModel
 import com.eaguirre.myflix.ui.common.startActivity
 import com.eaguirre.myflix.ui.detail.DetailActivity
@@ -29,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
         setContentView(binding.root)
 
-        viewModel = getViewModel { MainViewModel(MoviesRepository(application)) } //ViewModelProvider( this, MainViewModelFactory(MoviesRepository(this)))[MainViewModel::class.java]
+        viewModel = getViewModel { MainViewModel(MoviesRepository(app)) } //ViewModelProvider( this, MainViewModelFactory(MoviesRepository(this)))[MainViewModel::class.java]
 
         moviesAdapter = MoviesAdapter(viewModel::onMovieClicked)
         binding.recyclerMovies.adapter = moviesAdapter
@@ -39,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             event ->
             event.getContentIfNotHandled()?.let{
                 startActivity<DetailActivity> {
-                    putExtra(DetailActivity.EXTRA_MOVIE, it)
+                    putExtra(DetailActivity.EXTRA_MOVIE, it.id)
                 }
             }
         })
@@ -59,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                 viewModel.onCoarsePermissionRequested()
             }
         }
-
 
     }
 }
