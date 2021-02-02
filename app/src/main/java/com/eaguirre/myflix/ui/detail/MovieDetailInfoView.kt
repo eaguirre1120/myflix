@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
+import com.eaguirre.domain.Movie
 import com.eaguirre.myflix.R
-import com.eaguirre.myflix.model.database.Movie
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

@@ -5,13 +5,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import com.eaguirre.data.MoviesRepository
+import com.eaguirre.data.repository.RegionRepository
 import com.eaguirre.myflix.PermissionRequester
+import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityMainBinding
-import com.eaguirre.myflix.model.server.MoviesRepository
+import com.eaguirre.myflix.model.AndroidPermissionChecker
+import com.eaguirre.myflix.model.PlayServicesLocationDataSource
+import com.eaguirre.myflix.model.database.RoomDataSource
+import com.eaguirre.myflix.model.server.TheMovieDbDataSource
 import com.eaguirre.myflix.ui.common.app
 import com.eaguirre.myflix.ui.common.getViewModel
 import com.eaguirre.myflix.ui.common.startActivity
 import com.eaguirre.myflix.ui.detail.DetailActivity
+import com.eaguirre.myflix.ui.main.MainViewModel.UiModel
+import com.eaguirre.usecases.GetPopularMovies
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +35,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
         setContentView(binding.root)
 
-        viewModel = getViewModel { MainViewModel(MoviesRepository(app)) } //ViewModelProvider( this, MainViewModelFactory(MoviesRepository(this)))[MainViewModel::class.java]
+        viewModel = getViewModel {
+            MainViewModel(
+                    GetPopularMovies(
+                        MoviesRepository(
+                            RoomDataSource(app.db),
+                            TheMovieDbDataSource(),
+                            RegionRepository(
+                                PlayServicesLocationDataSource(app),
+                                AndroidPermissionChecker(app)
+                            ),
+                            getString(R.string.api_key)
+                        )
+                    )
+            )
+        } //ViewModelProvider( this, MainViewModelFactory(MoviesRepository(this)))[MainViewModel::class.java]
 
         moviesAdapter = MoviesAdapter(viewModel::onMovieClicked)
         binding.recyclerMovies.adapter = moviesAdapter
@@ -44,16 +66,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun updateUi(model: MainViewModel.UiModel) {
+    private fun updateUi(model: UiModel) {
 
-        binding.progressbar.visibility = if (model == MainViewModel.UiModel.Loading) View.VISIBLE else View.GONE
+        binding.progressbar.visibility = if (model == UiModel.Loading) View.VISIBLE else View.GONE
 
         when(model){
-            is MainViewModel.UiModel.Content -> {
+            is UiModel.Content -> {
                 moviesAdapter.movies = model.movies
                 moviesAdapter.notifyDataSetChanged()
             }
-            MainViewModel.UiModel.RequestLocationPermission -> coarsePermissionRequester.request {
+            UiModel.RequestLocationPermission -> coarsePermissionRequester.request {
                 viewModel.onCoarsePermissionRequested()
             }
         }

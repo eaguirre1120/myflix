@@ -2,15 +2,13 @@ package com.eaguirre.myflix.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.eaguirre.myflix.model.database.Movie
-import com.eaguirre.myflix.model.server.MoviesRepository
+import com.eaguirre.domain.Movie
 import com.eaguirre.myflix.ui.common.Event
-import com.eaguirre.myflix.ui.common.Scope
 import com.eaguirre.myflix.ui.common.ScopedViewModel
+import com.eaguirre.usecases.GetPopularMovies
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val  moviesRepository: MoviesRepository) : ScopedViewModel(){
+class MainViewModel(private val getPopularMovies: GetPopularMovies) : ScopedViewModel(){
 
     sealed class UiModel{
         object Loading : UiModel()
@@ -39,7 +37,7 @@ class MainViewModel(private val  moviesRepository: MoviesRepository) : ScopedVie
     fun onCoarsePermissionRequested() {
         launch {
             _model.value = UiModel.Loading
-            _model.value = UiModel.Content(moviesRepository.findPopularMovies())
+            _model.value = UiModel.Content(getPopularMovies.invoke())
         }
     }
 

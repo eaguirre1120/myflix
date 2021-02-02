@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.eaguirre.myflix.ui.common.basicDiffUtil
 import com.bumptech.glide.Glide
+import com.eaguirre.domain.Movie
 import com.eaguirre.myflix.databinding.ViewMovieItemBinding
-import com.eaguirre.myflix.model.database.Movie
 
 /*interface MovieClickedListener{
     fun onMovieClicked(movie: Movie) // (Movie)->Unit

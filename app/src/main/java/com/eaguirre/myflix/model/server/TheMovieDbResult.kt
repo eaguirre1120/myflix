@@ -3,7 +3,7 @@ package com.eaguirre.myflix.model.server
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-data class MovieDbResult(
+data class TheMovieDbResult(
     val page: Int,
     val results: List<Movie>,
     val total_pages: Int,

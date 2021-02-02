@@ -3,13 +3,18 @@ package com.eaguirre.myflix.ui.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.eaguirre.myflix.model.database.Movie
-import com.eaguirre.myflix.model.server.MoviesRepository
+import com.eaguirre.domain.Movie
 import com.eaguirre.myflix.ui.common.ScopedViewModel
+import com.eaguirre.usecases.FindMovieById
+import com.eaguirre.usecases.ToogleMovieFavorite
 import kotlinx.coroutines.launch
 
 
-class DetailViewModel(private val movieId: Int, private val moviesRepository: MoviesRepository) : ScopedViewModel() {
+class DetailViewModel(
+    private val movieId: Int,
+    private val findMovieById: FindMovieById,
+    private val toogleMovieFavorite: ToogleMovieFavorite
+    ) : ScopedViewModel() {
 
     class UiModel(val movie: Movie)
 
@@ -20,14 +25,12 @@ class DetailViewModel(private val movieId: Int, private val moviesRepository: Mo
             return _model
         }
     private fun findMovie() = launch {
-        _model.value = UiModel(moviesRepository.findById(movieId))
+        _model.value = UiModel(findMovieById.invoke(movieId))
     }
 
     fun onMovieFavoriteClicked() = launch {
         _model.value?.movie?.let {
-            val updatedMovie = it.copy(favorite = !it.favorite)
-            _model.value = UiModel(updatedMovie)
-            moviesRepository.update(updatedMovie)
+            _model.value = UiModel(toogleMovieFavorite.invoke(it))
         }
     }
 }
