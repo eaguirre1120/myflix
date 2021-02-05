@@ -7,13 +7,13 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.eaguirre.data.MoviesRepository
 import com.eaguirre.data.repository.RegionRepository
-import com.eaguirre.myflix.PermissionRequester
+import com.eaguirre.myflix.ui.common.PermissionRequester
 import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityMainBinding
-import com.eaguirre.myflix.model.AndroidPermissionChecker
-import com.eaguirre.myflix.model.PlayServicesLocationDataSource
-import com.eaguirre.myflix.model.database.RoomDataSource
-import com.eaguirre.myflix.model.server.TheMovieDbDataSource
+import com.eaguirre.myflix.data.AndroidPermissionChecker
+import com.eaguirre.myflix.data.PlayServicesLocationDataSource
+import com.eaguirre.myflix.data.database.RoomDataSource
+import com.eaguirre.myflix.data.server.TheMovieDbDataSource
 import com.eaguirre.myflix.ui.common.app
 import com.eaguirre.myflix.ui.common.getViewModel
 import com.eaguirre.myflix.ui.common.startActivity
@@ -25,9 +25,11 @@ import com.eaguirre.usecases.GetPopularMovies
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var  viewModel : MainViewModel
     private lateinit var moviesAdapter : MoviesAdapter
     private val coarsePermissionRequester = PermissionRequester(this, ACCESS_COARSE_LOCATION)
+
+    private lateinit var component: MainActivityComponent
+    private val viewModel: MainViewModel by lazy{getViewModel { component.mainViewModel }}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
         setContentView(binding.root)
 
-        viewModel = getViewModel {
+        component = app.component.plus(MainActivityModule())
+        /*viewModel = getViewModel {
             MainViewModel(
                     GetPopularMovies(
                         MoviesRepository(
@@ -49,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
             )
-        } //ViewModelProvider( this, MainViewModelFactory(MoviesRepository(this)))[MainViewModel::class.java]
+        }*///ViewModelProvider( this, MainViewModelFactory(MoviesRepository(this)))[MainViewModel::class.java]
 
         moviesAdapter = MoviesAdapter(viewModel::onMovieClicked)
         binding.recyclerMovies.adapter = moviesAdapter

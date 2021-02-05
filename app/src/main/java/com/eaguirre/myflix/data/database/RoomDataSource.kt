@@ -1,11 +1,11 @@
-package com.eaguirre.myflix.model.database
+package com.eaguirre.myflix.data.database
 
+import com.eaguirre.data.source.LocalDataSource
 import com.eaguirre.domain.Movie
-import com.eaguirre.myflix.model.toDomainMovie
-import com.eaguirre.myflix.model.toRoomMovie
+import com.eaguirre.myflix.data.toDomainMovie
+import com.eaguirre.myflix.data.toRoomMovie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.eaguirre.data.source.LocalDataSource
 
 class RoomDataSource(db: MovieDatabase): LocalDataSource {
 

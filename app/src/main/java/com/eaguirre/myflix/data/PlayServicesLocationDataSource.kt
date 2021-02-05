@@ -1,4 +1,4 @@
-package com.eaguirre.myflix.model
+package com.eaguirre.myflix.data
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -6,7 +6,6 @@ import android.location.Geocoder
 import android.location.Location
 import com.eaguirre.data.source.LocationDataSource
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 

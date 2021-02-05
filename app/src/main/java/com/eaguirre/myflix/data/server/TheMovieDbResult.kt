@@ -1,4 +1,4 @@
-package com.eaguirre.myflix.model.server
+package com.eaguirre.myflix.data.server
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

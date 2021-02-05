@@ -1,4 +1,4 @@
-package com.eaguirre.myflix.model.database
+package com.eaguirre.myflix.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

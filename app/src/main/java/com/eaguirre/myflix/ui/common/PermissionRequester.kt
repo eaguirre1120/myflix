@@ -1,4 +1,4 @@
-package com.eaguirre.myflix
+package com.eaguirre.myflix.ui.common
 
 import android.app.Activity
 import com.karumi.dexter.Dexter

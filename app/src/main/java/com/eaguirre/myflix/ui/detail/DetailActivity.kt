@@ -3,8 +3,6 @@ package com.eaguirre.myflix.ui.detail
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.LocaleList
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -13,10 +11,10 @@ import com.eaguirre.data.MoviesRepository
 import com.eaguirre.data.repository.RegionRepository
 import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
-import com.eaguirre.myflix.model.AndroidPermissionChecker
-import com.eaguirre.myflix.model.PlayServicesLocationDataSource
-import com.eaguirre.myflix.model.database.RoomDataSource
-import com.eaguirre.myflix.model.server.TheMovieDbDataSource
+import com.eaguirre.myflix.data.AndroidPermissionChecker
+import com.eaguirre.myflix.data.PlayServicesLocationDataSource
+import com.eaguirre.myflix.data.database.RoomDataSource
+import com.eaguirre.myflix.data.server.TheMovieDbDataSource
 import com.eaguirre.myflix.ui.common.app
 import com.eaguirre.myflix.ui.common.getViewModel
 import com.eaguirre.myflix.ui.detail.DetailViewModel.*
@@ -28,7 +26,8 @@ import kotlinx.android.synthetic.main.activity_detail.view.*
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    private lateinit var viewModel: DetailViewModel
+    private lateinit var component: DetailActivityComponent
+    private val viewModel by lazy { getViewModel{ component.detailViewModel } }
 
     companion object{
         const val EXTRA_MOVIE = "DetailActivity:movie"
@@ -44,7 +43,9 @@ class DetailActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val movieId = intent.getIntExtra(EXTRA_MOVIE, 0)
+        component = app.component.plus(DetailActivityModule(intent.getIntExtra(EXTRA_MOVIE, -1)))
+
+        /*val movieId = intent.getIntExtra(EXTRA_MOVIE, 0)
         if (movieId != null) {
             viewModel = getViewModel {
                 val moviesRepository = MoviesRepository(
@@ -64,7 +65,7 @@ class DetailActivity : AppCompatActivity() {
                 )
             }
         //ViewModelProvider(this, DetailViewModelFactory(movie))[DetailViewModel::class.java]
-        }
+        }*/
 
         viewModel.model.observe(this, Observer(::updateUi))
 

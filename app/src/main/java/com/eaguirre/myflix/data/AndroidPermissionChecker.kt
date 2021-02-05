@@ -1,8 +1,7 @@
-package com.eaguirre.myflix.model
+package com.eaguirre.myflix.data
 
 import android.Manifest.*
 import android.app.Application
-import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import com.eaguirre.data.repository.PermissionChecker

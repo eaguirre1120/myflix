@@ -1,8 +1,8 @@
-package com.eaguirre.myflix.model
+package com.eaguirre.myflix.data
 
 import com.eaguirre.domain.Movie
-import com.eaguirre.myflix.model.database.Movie as DomainMovie
-import com.eaguirre.myflix.model.server.Movie as ServerMovie
+import com.eaguirre.myflix.data.database.Movie as DomainMovie
+import com.eaguirre.myflix.data.server.Movie as ServerMovie
 
 fun Movie.toRoomMovie(): DomainMovie = DomainMovie(
         id,

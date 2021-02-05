@@ -1,4 +1,4 @@
-package com.eaguirre.myflix.model.server
+package com.eaguirre.myflix.data.server
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

@@ -1,19 +1,17 @@
 package com.eaguirre.myflix
 
 import android.app.Application
-import androidx.room.Room
-import com.eaguirre.myflix.model.database.MovieDatabase
+import com.eaguirre.myflix.di.DaggerMyFlixComponent
+import com.eaguirre.myflix.di.MyFlixComponent
 
 class MoviesApp: Application() {
-    lateinit var db: MovieDatabase
+    lateinit var component: MyFlixComponent
     private set
 
     override fun onCreate() {
         super.onCreate()
-        db = Room.databaseBuilder(
-            this,
-            MovieDatabase::class.java,
-            "movie_db"
-        ).build()
+        component = DaggerMyFlixComponent
+                .factory()
+                .create(this)
     }
 }
