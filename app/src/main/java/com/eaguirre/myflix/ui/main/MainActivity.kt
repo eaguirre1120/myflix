@@ -5,31 +5,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import com.eaguirre.data.MoviesRepository
-import com.eaguirre.data.repository.RegionRepository
 import com.eaguirre.myflix.ui.common.PermissionRequester
-import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityMainBinding
-import com.eaguirre.myflix.data.AndroidPermissionChecker
-import com.eaguirre.myflix.data.PlayServicesLocationDataSource
-import com.eaguirre.myflix.data.database.RoomDataSource
-import com.eaguirre.myflix.data.server.TheMovieDbDataSource
-import com.eaguirre.myflix.ui.common.app
-import com.eaguirre.myflix.ui.common.getViewModel
 import com.eaguirre.myflix.ui.common.startActivity
 import com.eaguirre.myflix.ui.detail.DetailActivity
 import com.eaguirre.myflix.ui.main.MainViewModel.UiModel
-import com.eaguirre.usecases.GetPopularMovies
+import org.koin.androidx.scope.ScopeActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ScopeActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var moviesAdapter : MoviesAdapter
     private val coarsePermissionRequester = PermissionRequester(this, ACCESS_COARSE_LOCATION)
 
-    private lateinit var component: MainActivityComponent
-    private val viewModel: MainViewModel by lazy{getViewModel { component.mainViewModel }}
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)//El objeto toma el nombre del layout
         setContentView(binding.root)
 
-        component = app.component.plus(MainActivityModule())
         /*viewModel = getViewModel {
             MainViewModel(
                     GetPopularMovies(

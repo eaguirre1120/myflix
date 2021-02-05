@@ -7,27 +7,22 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
-import com.eaguirre.data.MoviesRepository
-import com.eaguirre.data.repository.RegionRepository
 import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
-import com.eaguirre.myflix.data.AndroidPermissionChecker
-import com.eaguirre.myflix.data.PlayServicesLocationDataSource
-import com.eaguirre.myflix.data.database.RoomDataSource
-import com.eaguirre.myflix.data.server.TheMovieDbDataSource
 import com.eaguirre.myflix.ui.common.app
-import com.eaguirre.myflix.ui.common.getViewModel
 import com.eaguirre.myflix.ui.detail.DetailViewModel.*
-import com.eaguirre.usecases.FindMovieById
-import com.eaguirre.usecases.ToogleMovieFavorite
 import kotlinx.android.synthetic.main.activity_detail.view.*
+import org.koin.androidx.scope.ScopeActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : ScopeActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    private lateinit var component: DetailActivityComponent
-    private val viewModel by lazy { getViewModel{ component.detailViewModel } }
+    private val viewModel: DetailViewModel by viewModel{
+        parametersOf(intent.getIntExtra(EXTRA_MOVIE, -1))
+    }
 
     companion object{
         const val EXTRA_MOVIE = "DetailActivity:movie"
@@ -42,8 +37,6 @@ class DetailActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        component = app.component.plus(DetailActivityModule(intent.getIntExtra(EXTRA_MOVIE, -1)))
 
         /*val movieId = intent.getIntExtra(EXTRA_MOVIE, 0)
         if (movieId != null) {
