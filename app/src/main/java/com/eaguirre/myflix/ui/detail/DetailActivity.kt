@@ -1,15 +1,14 @@
 package com.eaguirre.myflix.ui.detail
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
-import com.eaguirre.myflix.ui.common.app
 import com.eaguirre.myflix.ui.detail.DetailViewModel.*
 import kotlinx.android.synthetic.main.activity_detail.view.*
 import org.koin.androidx.scope.ScopeActivity
@@ -71,7 +70,6 @@ class DetailActivity : ScopeActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateUi(model: UiModel) {
         val movie = model.movie
-        title = movie.title
         Glide.with(this)
                 .load("https://image.tmdb.org/t/p/w780/${movie.backdropPath}")
                 .into(binding.backdrop)
@@ -80,5 +78,7 @@ class DetailActivity : ScopeActivity() {
         //setDetailInfo(binding.detailinfo, movie)
         val icon = if (movie.favorite) R.drawable.ic_favorite_border_checked else R.drawable.ic_favorite_border_unchecked
         binding.fab.setImageDrawable( ContextCompat.getDrawable(this@DetailActivity,icon))
+        this.title = movie.title
+        Log.d("MainActivity", movie.title)
     }
 }
