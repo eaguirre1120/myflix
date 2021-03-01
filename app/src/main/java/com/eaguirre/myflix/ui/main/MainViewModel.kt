@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
         private val getPopularMovies: GetPopularMovies,
         uiDispatcher: CoroutineDispatcher
-        ) : ScopedViewModel(uiDispatcher){
+) : ScopedViewModel(uiDispatcher){
 
     sealed class UiModel{
         object Loading : UiModel()
