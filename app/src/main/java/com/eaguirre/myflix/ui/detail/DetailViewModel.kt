@@ -7,14 +7,16 @@ import com.eaguirre.domain.Movie
 import com.eaguirre.myflix.ui.common.ScopedViewModel
 import com.eaguirre.usecases.FindMovieById
 import com.eaguirre.usecases.ToogleMovieFavorite
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
 
 class DetailViewModel(
     private val movieId: Int,
     private val findMovieById: FindMovieById,
-    private val toogleMovieFavorite: ToogleMovieFavorite
-    ) : ScopedViewModel() {
+    private val toogleMovieFavorite: ToogleMovieFavorite,
+    uiDispatcher: CoroutineDispatcher
+    ) : ScopedViewModel(uiDispatcher) {
 
     class UiModel(val movie: Movie)
 

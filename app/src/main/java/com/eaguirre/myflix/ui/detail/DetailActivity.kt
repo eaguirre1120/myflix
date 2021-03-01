@@ -10,7 +10,9 @@ import com.bumptech.glide.Glide
 import com.eaguirre.myflix.R
 import com.eaguirre.myflix.databinding.ActivityDetailBinding
 import com.eaguirre.myflix.ui.detail.DetailViewModel.*
+import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.activity_detail.view.*
+import kotlinx.android.synthetic.main.view_movie_item.view.*
 import org.koin.androidx.scope.ScopeActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -36,6 +38,7 @@ class DetailActivity : ScopeActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        title = "TEST"
 
         /*val movieId = intent.getIntExtra(EXTRA_MOVIE, 0)
         if (movieId != null) {
@@ -78,7 +81,7 @@ class DetailActivity : ScopeActivity() {
         //setDetailInfo(binding.detailinfo, movie)
         val icon = if (movie.favorite) R.drawable.ic_favorite_border_checked else R.drawable.ic_favorite_border_unchecked
         binding.fab.setImageDrawable( ContextCompat.getDrawable(this@DetailActivity,icon))
-        this.title = movie.title
+        title = movie.title
         Log.d("MainActivity", movie.title)
     }
 }

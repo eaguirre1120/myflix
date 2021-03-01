@@ -6,9 +6,13 @@ import com.eaguirre.domain.Movie
 import com.eaguirre.myflix.ui.common.Event
 import com.eaguirre.myflix.ui.common.ScopedViewModel
 import com.eaguirre.usecases.GetPopularMovies
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val getPopularMovies: GetPopularMovies) : ScopedViewModel(){
+class MainViewModel(
+        private val getPopularMovies: GetPopularMovies,
+        uiDispatcher: CoroutineDispatcher
+        ) : ScopedViewModel(uiDispatcher){
 
     sealed class UiModel{
         object Loading : UiModel()
