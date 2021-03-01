@@ -19,6 +19,8 @@ import com.eaguirre.myflix.ui.main.MainViewModel
 import com.eaguirre.usecases.FindMovieById
 import com.eaguirre.usecases.GetPopularMovies
 import com.eaguirre.usecases.ToogleMovieFavorite
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -42,6 +44,7 @@ private val appModule = module {
     factory<RemoteDataSource> { TheMovieDbDataSource() }
     factory<LocationDataSource> { PlayServicesLocationDataSource(get()) }
     factory<PermissionChecker> { AndroidPermissionChecker(get()) }
+    single<CoroutineDispatcher> { Dispatchers.Main }
 }
 
 private val dataModule = module {
@@ -51,11 +54,11 @@ private val dataModule = module {
 
 private val scopesModule = module {
     scope(named<MainActivity>()){
-        viewModel { MainViewModel(get()) }
+        viewModel { MainViewModel(get(), get()) }
         scoped { GetPopularMovies(get()) }
     }
     scope(named<DetailActivity>()){
-        viewModel { (id: Int) -> DetailViewModel(id, get(), get()) }
+        viewModel { (id: Int) -> DetailViewModel(id, get(), get(), get()) }
         scoped { FindMovieById(get()) }
         scoped { ToogleMovieFavorite(get()) }
     }
